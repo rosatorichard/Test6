@@ -17,7 +17,7 @@ public interface MainActivityContract{
         void RecieveList(List<MovieListPojo> movieListPojoList);
     }
 
-    interface Presenter extends BasePresenter
+    interface Presenter extends BasePresenter<View>
     {
         void parseJson(String s);
 

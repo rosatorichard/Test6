@@ -6,7 +6,7 @@ import com.batchmates.android.test6.view.MainActivityContract;
  * Created by Android on 7/28/2017.
  */
 
-public interface BasePresenter <V extends MainActivityContract.View>{
+public interface BasePresenter <V extends BaseView>{
 
     void addView(V view);
     void removeView();
