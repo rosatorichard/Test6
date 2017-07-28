@@ -1,5 +1,6 @@
 package com.batchmates.android.test6.view;
 
+import android.content.Intent;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import com.batchmates.android.test6.R;
 import com.batchmates.android.test6.model.MovieListPojo;
+import com.batchmates.android.test6.view.secondactivity.Main2Activity;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        MovieListPojo pojo=movieListPojos.get(position);
+        final MovieListPojo pojo=movieListPojos.get(position);
 
         holder.movieTitle.setText(pojo.getTitle());
         Glide.with(holder.itemView.getContext()).load("https://image.tmdb.org/t/p/w185_and_h278_bestv2/"+pojo.getImageurl()).into(holder.movieImage);
@@ -47,6 +49,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(),"Clicked: "+holder.movieTitle.getText(),Toast.LENGTH_SHORT).show();
+                Intent intent =new Intent(view.getContext(), Main2Activity.class);
+                intent.putExtra("TITLE",holder.movieTitle.getText());
+                intent.putExtra("IMAGE",pojo.getImageurl());
+                view.getContext().startActivity(intent);
             }
         });
     }
