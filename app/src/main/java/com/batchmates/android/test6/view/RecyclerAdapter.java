@@ -51,7 +51,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(),"Clicked: "+holder.movieTitle.getText(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(),holder.movieTitle.getText(),Toast.LENGTH_SHORT).show();
                 Intent intent =new Intent(view.getContext(), Main2Activity.class);
                 intent.putExtra("TITLE",holder.movieTitle.getText());
                 intent.putExtra("IMAGE",pojo.getImageurl());
