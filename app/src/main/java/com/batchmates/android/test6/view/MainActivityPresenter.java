@@ -94,7 +94,7 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
                             response.body().getResults().get(i).getPosterPath(),
                             response.body().getResults().get(i).getOverview(),
                             response.body().getResults().get(i).getVoteAverage()));
-                    Log.d(TAG, "onResponse: "+response.body().getResults().get(i).getVoteAverage());
+                    Log.d(TAG, "onResponse: "+response.body().getResults().get(i).getPopularity());
 //                    Log.d(TAG, "onResponse: "+response.body().getResults().get(i).getPosterPath());
                 }
                 Log.d(TAG, "onResponse: "+response.body().getTotalPages());

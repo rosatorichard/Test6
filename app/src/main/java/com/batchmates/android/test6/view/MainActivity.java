@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     private LinearLayoutManager layoutManager;
     private DefaultItemAnimator itemAnimator=new DefaultItemAnimator();
     private RecyclerAdapter recyclerAdapter;
+    private String currentSearch="";
 
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
@@ -67,7 +68,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     }
 
     public void lookForMovie(View view) {
-        presenter.callMovies(movieType.getText().toString());
+        if(movieType.getText().toString().length()==0)
+        {
+            currentSearch="comedy";
+        }
+        else {
+            currentSearch = movieType.getText().toString();
+        }
+        Log.d("MainActivity", "lookForMovie: "+movieType.getText());
+        presenter.callMovies(currentSearch);
         recyclerList.clear();
     }
 
@@ -96,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
                         {
 //                            loading = false;
                             Log.v("...", "Last Item Wow !");
-                            presenter.nextPAge(movieType.getText().toString());
+                            presenter.nextPAge(currentSearch);
                             //Do pagination.. i.e. fetch new data
                         }
                     }
