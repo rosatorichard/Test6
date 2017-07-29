@@ -12,7 +12,9 @@ import android.widget.EditText;
 import com.batchmates.android.test6.R;
 import com.batchmates.android.test6.injection.DaggerMainActivityComponent;
 import com.batchmates.android.test6.model.MovieListPojo;
+import com.batchmates.android.test6.model.MoviesPojo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,10 +25,14 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements MainActivityContract.View{
 
 
+    private List<MovieListPojo> recyclerList=new ArrayList<>();
     @Inject MainActivityPresenter presenter;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private DefaultItemAnimator itemAnimator=new DefaultItemAnimator();
     private RecyclerAdapter recyclerAdapter;
+
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
 
     String toParse="{\"menu\": {\"header\": \"menu\", \"items\": [{\"id\": 27}, {\"id\": 0, \"label\": \"Label 0\"}, null, {\"id\": 93}, {\"id\": 85}, {\"id\": 54}, null, {\"id\": 46, \"label\": \"Label 46\"}]}}";
@@ -62,11 +68,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
     public void lookForMovie(View view) {
         presenter.callMovies(movieType.getText().toString());
+        recyclerList.clear();
     }
 
     @Override
     public void RecieveList(List<MovieListPojo> movieListPojoList) {
-        recyclerAdapter=new RecyclerAdapter(movieListPojoList,movieType.getText().toString());
+        recyclerList=movieListPojoList;
+        recyclerAdapter=new RecyclerAdapter(recyclerList,movieType.getText().toString());
         layoutManager= new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(itemAnimator);
@@ -74,11 +82,34 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                Log.d("OnTouchListeneer", "onScrollStateChanged: "+newState);
-                Log.d("whaqtshere", "onScrollStateChanged: "+recyclerView.getChildAdapterPosition(recyclerView.getChildAt(19)));
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                if(dy > 0) //check for scroll down
+                {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount-4)
+                        {
+//                            loading = false;
+                            Log.v("...", "Last Item Wow !");
+                            presenter.nextPAge(movieType.getText().toString());
+                            //Do pagination.. i.e. fetch new data
+                        }
+                    }
+                }
+
+//                super.onScrolled(recyclerView, dx, dy);
             }
         });
+    }
+
+    @Override
+    public void updateList(List<MovieListPojo> movieListPojoList) {
+        recyclerList=movieListPojoList;
+        recyclerAdapter.notifyDataSetChanged();
     }
 }

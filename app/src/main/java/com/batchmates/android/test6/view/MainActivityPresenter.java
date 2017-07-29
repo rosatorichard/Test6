@@ -29,6 +29,7 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
     List<MovieListPojo> movieListPojo=new ArrayList<>();
     private String title;
     private int counter=1;
+    private int maxPages=10;
 
 
     @Override
@@ -72,6 +73,8 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
     @Override
     public void callMovies(String s) {
 
+        counter=1;
+        movieListPojo.clear();
         retrofit2.Call<MoviesPojo> makecall =RetroFitHelper.getmovies(s,counter);
         makecall.enqueue(new Callback<MoviesPojo>() {
             @Override
@@ -88,13 +91,15 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
                         title=response.body().getResults().get(i).getOriginalTitle();
                     }
                     movieListPojo.add(new MovieListPojo(title,
-                            response.body().getResults().get(i).getPosterPath()));
-                    Log.d(TAG, "onResponse: "+response.body().getResults().get(i).getOriginalTitle());
-                    Log.d(TAG, "onResponse: "+response.body().getResults().get(i).getPosterPath());
+                            response.body().getResults().get(i).getPosterPath(),
+                            response.body().getResults().get(i).getOverview(),
+                            response.body().getResults().get(i).getVoteAverage()));
+                    Log.d(TAG, "onResponse: "+response.body().getResults().get(i).getVoteAverage());
+//                    Log.d(TAG, "onResponse: "+response.body().getResults().get(i).getPosterPath());
                 }
-                Log.d(TAG, "onResponse: "+movieListPojo);
+                Log.d(TAG, "onResponse: "+response.body().getTotalPages());
+                maxPages=response.body().getTotalPages();
                 view.RecieveList(movieListPojo);
-                counter++;
             }
 
             @Override
@@ -103,5 +108,47 @@ public class MainActivityPresenter implements MainActivityContract.Presenter {
 
             }
         });
+    }
+
+    @Override
+    public void nextPAge(String s) {
+
+        if(counter==maxPages)
+        {
+            Log.d(TAG, "nextPAge: At the max page");
+        }
+        else
+        {
+            counter++;
+            retrofit2.Call<MoviesPojo> makecall = RetroFitHelper.getmovies(s, counter);
+            makecall.enqueue(new Callback<MoviesPojo>() {
+                @Override
+                public void onResponse(Call<MoviesPojo> call, Response<MoviesPojo> response) {
+                    Log.d(TAG, "onResponse: " + response.body());
+                    for (int i = 0; i < response.body().getResults().size(); i++) {
+
+                        if (response.body().getResults().get(i).getOriginalTitle() == null) {
+                            title = response.body().getResults().get(i).getTitle();
+                        } else {
+                            title = response.body().getResults().get(i).getOriginalTitle();
+                        }
+                        movieListPojo.add(new MovieListPojo(title,
+                                response.body().getResults().get(i).getPosterPath(),
+                                response.body().getResults().get(i).getOverview(),
+                                response.body().getResults().get(i).getVoteAverage()));
+                        Log.d(TAG, "onResponse: " + response.body().getResults().get(i).getVoteAverage());
+//                    Log.d(TAG, "onResponse: "+response.body().getResults().get(i).getPosterPath());
+                    }
+                    Log.d(TAG, "onResponse: " + movieListPojo);
+                    view.updateList(movieListPojo);
+                }
+
+                @Override
+                public void onFailure(Call<MoviesPojo> call, Throwable t) {
+                    Log.d(TAG, "onFailure: " + t.toString());
+
+                }
+            });
+        }
     }
 }

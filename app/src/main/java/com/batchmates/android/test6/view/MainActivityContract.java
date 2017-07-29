@@ -15,6 +15,7 @@ public interface MainActivityContract{
     interface View extends BaseView
     {
         void RecieveList(List<MovieListPojo> movieListPojoList);
+        void updateList(List<MovieListPojo> movieListPojoList);
     }
 
     interface Presenter extends BasePresenter<View>
@@ -22,5 +23,6 @@ public interface MainActivityContract{
         void parseJson(String s);
 
         void callMovies(String s);
+        void nextPAge(String s);
     }
 }

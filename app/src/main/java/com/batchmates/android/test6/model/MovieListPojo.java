@@ -8,12 +8,23 @@ public class MovieListPojo {
 
     String title;
     String imageurl;
+    String overview;
+    double userRating;
 
-    public MovieListPojo(String title, String imageurl) {
+    public MovieListPojo(String title, String imageurl,String overview,double userRating) {
         this.title = title;
         this.imageurl = imageurl;
+        this.overview=overview;
+        this.userRating=userRating;
     }
 
+    public double getUserRating() {
+        return userRating;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
 
     public String getTitle() {
         return title;

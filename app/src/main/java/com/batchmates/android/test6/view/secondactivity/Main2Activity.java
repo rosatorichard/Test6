@@ -25,6 +25,10 @@ public class Main2Activity extends AppCompatActivity {
         ButterKnife.bind(this);
         title.setText(getIntent().getStringExtra("TITLE"));
         Glide.with(this).load("https://image.tmdb.org/t/p/w185_and_h278_bestv2/"+getIntent().getStringExtra("IMAGE")).into(picture);
+        double theRating=getIntent().getDoubleExtra("USER",0);
+        rating.setText(String.valueOf(theRating)+"/10.0");
+        disc.setText(getIntent().getStringExtra("DISC"));
+
 
         setUpDagger();
     }
@@ -40,5 +44,11 @@ public class Main2Activity extends AppCompatActivity {
     @BindView(R.id.ivPicture)
     ImageView picture;
 
+    @BindView(R.id.tvRating)
+    TextView rating;
+
+
+    @BindView(R.id.tvDisc)
+    TextView disc;
 
 }

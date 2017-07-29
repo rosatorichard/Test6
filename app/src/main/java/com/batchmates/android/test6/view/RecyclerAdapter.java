@@ -26,6 +26,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     List<MovieListPojo> movieListPojos=new ArrayList<>();
     String currentMovieType;
+    private double ratingDouble;
 
     public RecyclerAdapter(List<MovieListPojo> movieListPojos,String currentMovieType) {
         this.movieListPojos = movieListPojos;
@@ -39,11 +40,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final MovieListPojo pojo=movieListPojos.get(position);
 
         holder.movieTitle.setText(pojo.getTitle());
         Glide.with(holder.itemView.getContext()).load("https://image.tmdb.org/t/p/w185_and_h278_bestv2/"+pojo.getImageurl()).into(holder.movieImage);
+        ratingDouble=pojo.getUserRating();
+        holder.userRating.setText(String.valueOf(ratingDouble)+"/10.0");
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +55,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 Intent intent =new Intent(view.getContext(), Main2Activity.class);
                 intent.putExtra("TITLE",holder.movieTitle.getText());
                 intent.putExtra("IMAGE",pojo.getImageurl());
+                intent.putExtra("DISC",pojo.getOverview());
+                intent.putExtra("USER",pojo.getUserRating());
                 view.getContext().startActivity(intent);
             }
         });
@@ -65,10 +70,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView movieImage;
         TextView movieTitle;
+        TextView userRating;
         public ViewHolder(View itemView) {
             super(itemView);
             movieImage=itemView.findViewById(R.id.ivMovieImage);
             movieTitle=itemView.findViewById(R.id.tvMovieTitle);
+            userRating=itemView.findViewById(R.id.tvUserRating);
         }
     }
 }
