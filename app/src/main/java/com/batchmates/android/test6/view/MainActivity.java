@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.batchmates.android.test6.R;
 import com.batchmates.android.test6.injection.DaggerMainActivityComponent;
@@ -70,14 +71,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     public void lookForMovie(View view) {
         if(movieType.getText().toString().length()==0)
         {
-            currentSearch="comedy";
+            Toast.makeText(this,"Must Enter something to Search",Toast.LENGTH_SHORT).show();
         }
         else {
             currentSearch = movieType.getText().toString();
+            presenter.callMovies(currentSearch);
+            recyclerList.clear();
         }
-        Log.d("MainActivity", "lookForMovie: "+movieType.getText());
-        presenter.callMovies(currentSearch);
-        recyclerList.clear();
     }
 
     @Override
